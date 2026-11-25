@@ -1497,4 +1497,34 @@ let initial=decodeURIComponent(location.hash.slice(1))||'home';if(!ids.includes(
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init,{once:true})}else{init()}
 })();
 </script>
+<style id="home-hero-layout-fix">
+/* home-hero-layout-fix: заголовок главной снова внизу слева, не под меню и не за краем экрана */
+:root{--pz-home-bar:72px}
+@media (max-width:800px){:root{--pz-home-bar:0px}}
+body #home.site-tab-active > header,body #home > header{display:none!important}
+body #home,body.pixel-page-mode section#home.page-visible{height:calc(100dvh - var(--pz-home-bar))!important;min-height:0!important}
+body #home.site-tab-active > .left,body #home > .left{position:absolute!important;top:auto!important;left:clamp(24px,6vw,100px)!important;right:auto!important;bottom:clamp(65px,11vh,140px)!important;max-width:min(460px,calc(100% - 48px))!important;z-index:8!important}
+@media (max-width:800px){body #home.site-tab-active > .left,body #home > .left{bottom:105px!important}}
+@media (max-height:560px){
+ body #home.site-tab-active > .left,body #home > .left{bottom:56px!important}
+ body #home > .left h1{font-size:clamp(30px,8vh,40px)!important;line-height:1.02!important;margin-block:6px 10px!important}
+ body #home > .left p{display:none!important}
+}
+@media (max-width:600px){body #home.site-tab-active > .scroll,body #home > .scroll{display:none!important}}
+/* вкладки сверху: край показывает, что их можно прокрутить */
+#site-tab-bar .tab-links.pz-more-right{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent)}
+#site-tab-bar .tab-links.pz-more-left{-webkit-mask-image:linear-gradient(90deg,transparent,#000 56px);mask-image:linear-gradient(90deg,transparent,#000 56px)}
+#site-tab-bar .tab-links.pz-more-left.pz-more-right{-webkit-mask-image:linear-gradient(90deg,transparent,#000 56px,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,transparent,#000 56px,#000 calc(100% - 56px),transparent)}
+body #home.site-tab-active > .scroll,body #home > .scroll{z-index:8!important;text-shadow:0 1px 3px #000,0 0 10px #000c}
+</style>
+<script id="tab-strip-scroll-fix">
+(()=>{try{
+ const s=document.querySelector('#site-tab-bar .tab-links');if(!s)return;
+ const mark=()=>{const max=s.scrollWidth-s.clientWidth;s.classList.toggle('pz-more-left',s.scrollLeft>4);s.classList.toggle('pz-more-right',max>4&&s.scrollLeft<max-4)};
+ s.addEventListener('wheel',e=>{if(s.scrollWidth<=s.clientWidth||Math.abs(e.deltaX)>Math.abs(e.deltaY))return;s.scrollLeft+=e.deltaY;e.preventDefault()},{passive:false});
+ s.addEventListener('scroll',mark,{passive:true});addEventListener('resize',mark);
+ s.addEventListener('click',e=>{const a=e.target.closest('a');if(a)setTimeout(()=>{try{a.scrollIntoView({inline:'nearest',block:'nearest',behavior:'smooth'})}catch(_){}},50)});
+ mark();setTimeout(mark,800);
+}catch(e){}})();
+</script>
 </body></html>
